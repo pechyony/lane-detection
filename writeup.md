@@ -40,6 +40,7 @@ A.  We split the image into two equal parts, left and right. We try to find a ri
 All lines detected by Canny edge detector and Hough transform.
 </center>
 <br>
+
 B. Based on previous experiments, we assume that the left and right lane lines have slopes in ranges
 [-0.75, -0.55] and [0.55, 0.75] respectively. We remove all line segments with the slopes outside of these ranges.
 <br>
@@ -57,6 +58,7 @@ Left part of the image: lines with the slopes similar to lane lines.
 Right part of the image: lines with the slopes similar to lane lines.
 </center>
 <br>
+
 C. We build histogram of the slopes of detected lines and find the most common range of slopes (e.g. (0.61,0.66)). We use 3 bins for creating histograms. We remove all line segments with the slopes outside of the most common range of slopes.
 <br>
 <center>
@@ -73,6 +75,7 @@ Left part of the image: lines in the most common range of slopes.
 Right part of the image: lines in the most common range of slopes.
 </center>
 <br>
+
 D. We create a continuous line that connects minimal and maximal x and y points of the line segments in the previously found most common range of slopes. If the absolute value of the slope of the new continuous line is still in [0.55,0.75] range then we add this line to the list of lane line candidates.  
 <br>
 <center>
@@ -89,6 +92,7 @@ Left part of the image: continuous line that connects extreme points of the line
 Right part of the image: continuous line that connects extreme points of the line segments in the most common range of slopes.
 </center>
 <br>
+
 E. We use the function extend_lines() to extend the candidate lines to have the same minimal and maximal y coordinates. After this extension we have up to two continuous lines that represent lanes in the current frame. These are still not the continuous lines that are drawn in the image
 
 <center>
@@ -98,6 +102,7 @@ E. We use the function extend_lines() to extend the candidate lines to have the 
 Extended lines.
 </center>
 <br>
+
 F. After detecting the lanes in the current frame, we average them with the lanes drawn in the previous frame using the formula:    
 
 ```
