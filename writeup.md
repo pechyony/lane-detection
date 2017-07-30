@@ -26,81 +26,81 @@ that can be a part of the lanes.
 
 In order to draw continuous lane lines we modified the draw_lines() function. The new function is called draw_lines_continuous() and has seven steps. We use the following image from the challenge video to illustrate the steps of creating continuous lines:
 
-<center>
+<p align="center"> 
 <img src="./writeup_images/original_image.jpg" width="427" height="240" />
-</center>
-<br>
+</p>
+<br>    
 
 **Step 1.**  We split the image into two equal parts, left and right. We try to find a right lane line in the right part and left lane line in the left part. Notice that when the car drifts and the left lane appears in the right part of the image (or when the right lane appears in the left part of the image), one or both lane lines will not be detected. This might be a signal that the car is not in the right position.    
 <br>
-<center>
+<p align="center">
 <img src="./writeup_images/original_lines.jpg" width="427" height="240" />
-</center>
-<center>
+</p>
+<p align="center">
 All lines detected by Canny edge detector and Hough transform.
-</center>
+</p>
 <br>
 
 **Step 2.** Based on previous experiments, we assume that the left and right lane lines have slopes in ranges
 [-0.75, -0.55] and [0.55, 0.75] respectively. We remove all line segments with the slopes outside of these ranges.
 <br>
-<center>
+<p align="center">
 <img src="./writeup_images/left_directional_lines_slopes.jpg" width="427" height="240" />
-</center>
-<center>
+</p>
+<p align="center">
 Left part of the image: lines with the slopes similar to lane lines.
-</center>
+</p>
 <br>
-<center>
+<p align="center">
 <img src="./writeup_images/right_directional_lines_slopes.jpg" width="427" height="240" />
-</center>
-<center>
+</p>
+<p align="center">
 Right part of the image: lines with the slopes similar to lane lines.
-</center>
+</p>
 <br>
 
 **Step 3.** We build histogram of the slopes of detected lines and find the most common range of slopes (e.g. (0.61,0.66)). We use 3 bins for creating histograms. We remove all line segments with the slopes outside of the most common range of slopes.
 <br>
-<center>
+<p align="center">
 <img src="./writeup_images/left_slope_lines.jpg" width="427" height="240" />
-</center>
-<center>
+</p>
+<p align="center">
 Left part of the image: lines in the most common range of slopes.
-</center>
+</p>
 <br>
-<center>
+<p align="center">
 <img src="./writeup_images/right_slope_lines.jpg" width="427" height="240" />
-</center>
-<center>
+</p>
+<p align="center">
 Right part of the image: lines in the most common range of slopes.
-</center>
+</p>
 <br>
 
 **Step 4.** We create a continuous line that connects minimal and maximal x and y points of the line segments in the previously found most common range of slopes. If the absolute value of the slope of the new continuous line is still in [0.55,0.75] range then we add this line to the list of lane line candidates.  
 <br>
-<center>
+<p align="center">
 <img src="./writeup_images/left_candidate_lines.jpg" width="427" height="240" />
-</center>
-<center>
+</p>
+<p align="center">
 Left part of the image: continuous line that connects extreme points of the line segments in the most common range of slopes.
-</center>
+</p>
 <br>
-<center>
+<p align="center">
 <img src="./writeup_images/right_candidate_lines.jpg" width="427" height="240" />
-</center>
-<center>
+</p>
+<p align="center">
 Right part of the image: continuous line that connects extreme points of the line segments in the most common range of slopes.
-</center>
+</p>
 <br>
 
 **Step 5.** We use the function extend_lines() to extend the candidate lines to have the same minimal and maximal y coordinates. After this extension we have up to two continuous lines that represent lanes in the current frame. These are still not the continuous lines that are drawn in the image
 
-<center>
+<p align="center">
 <img src="./writeup_images/extended_lines.jpg" width="427" height="240" />
-</center>
-<center>
+</p>
+<p align="center">
 Extended lines.
-</center>
+</p>
 <br>
 
 **Step 6.** After detecting the lanes in the current frame, we average them with the lanes drawn in the previous frame using the formula:    
@@ -113,22 +113,22 @@ alpha * right/left lane in the current frame
 
 If at step B we didn't find any candidate for the left or right lane line in the current frame then we define the corresponding lane line at the current frame as the one that was drawn in the previous frame. We also use an expiration counter to limit the number of frames where we show exactly the same lane. When the lane is updated the counter is set to its maximal value. When there is no update, i.e. when we could not detect a lane in the current frame, the counter is reduced by one. When the counter reaches zero value we delete the previously detected lane.  
 <br>
-<center>
+<p align="center">
 <img src="./writeup_images/curr_lines.jpg" width="427" height="240" />
-</center>
-<center>
+</p>
+<p align="center">
 Weighted average of extended lines and the lines drawn in the previous frame.
-</center>
+</p>
 <br>
     
 **Step 7.** Finally we use the function extend_lines() one more time to extend the lanes in the current frame to have the same minimal and maximal y coordinates. The lanes lines after this extension are the final ones and are drawn over the black image.  
 <br>
-<center>
+<p align="center">
 <img src="./writeup_images/final_lines.jpg" width="427" height="240" />
-</center>
-<center>
+</p>
+<p align="center">
 Final lines that are drawn in the current image.
-</center>
+</p>
 
 ### 2. Identify potential shortcomings with your current pipeline
 
